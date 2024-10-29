@@ -514,9 +514,7 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
     assert(m_type == UT_NUMERIC);
 
     // 無効な数値 (NaN; Not a Number)か？
-    if (std::isnan(d)) {
-        return "NaN";
-    }
+    if (std::isnan(d)) return "NaN";
 
     // マイナスがあれば覚えておき、絶対値にする
     bool minus = std::signbit(d);
@@ -537,9 +535,13 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
         }
     }
 
+    // 小数部が長すぎないようにする
+    int precision = m_precision;
+    if (precision > 256 - 2) precision = 256 - 2;
+
     // 小数部をテキストに
     char buf[256];
-    std::sprintf(buf, "%.*f", m_precision, d - std::floor(d));
+    std::sprintf(buf, "%.*f", precision, d - std::floor(d));
     if (std::strcmp(buf, "0") == 0)
         std::strcpy(buf, "0.0");
     if (buf[0] == '1') { // 四捨五入で繰り上がり？
@@ -590,7 +592,7 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
     VskString ret; // 結果文字列
 
     // 必要ならば "0"を削る
-    int pre_dot = m_width - m_precision - m_dot;
+    int pre_dot = m_width - precision - m_dot;
     if (pre_dot <= 1) {
         if (digits == "-0")
             digits = "-";
@@ -600,7 +602,7 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
             digits = "";
     }
 
-    auto diff = m_width - m_precision - m_dot - int(digits.size());
+    auto diff = m_width - precision - m_dot - int(digits.size());
     if (diff < 0) { // 桁が足りなければ "%"を出力
         ret = "%" + digits;
     } else if (diff > 0) { // 余裕があれば文字で埋める
@@ -614,7 +616,7 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
     }
 
     if (m_dot) { // 小数点があるなら、小数点と小数部を追加
-        if (m_precision > 0) {
+        if (precision > 0) {
             ret += decimals;
         } else {
             ret += '.';
