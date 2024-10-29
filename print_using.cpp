@@ -3,6 +3,46 @@
 /////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////
+// ### `PRINT USING` Statement {#print_using}
+//
+// - **Purpose**: Outputs numbers or strings according to a specified format.
+// - **Origin**: Derived from the phrase "Print using"
+// - **Syntax**: `PRINT USING` *format_string* `;` *expression* `[`,*expression_separator*,*expression* `]` ...
+//
+// - **Description**: The *format_string* determines the field width and format for each *expression* output. 
+//   While *expression_separator* can be either a comma (`,`) or semicolon (`;`), the separator following 
+//   *format_string* must be a semicolon.
+//
+// **Format options for strings:**
+// 
+// - `!` … Outputs only the first character of the *expression*.
+// - `&    &` … Outputs up to `(n + 2)` characters from *expression*, where `n` is the number of spaces between `&` symbols.
+//             If the string is longer than `(n + 2)`, extra characters are discarded; if shorter, it left-aligns 
+//             and pads with spaces.
+// - `@` … Outputs the *expression* as-is.
+//
+// **Format options for numbers:**
+// 
+// - `#` … Specifies the digit count for output by the number of `#` symbols.
+// - `.` … Sets the decimal point position.
+// - `+` … Outputs the sign before or after the number.
+// - `-` … If the number is negative, outputs `-` after the number.
+// - `**` … Fills extra space on the left side with `*` characters, occupying two characters.
+// - `\\` … Outputs `\` on the left; occupies one character while reserving two characters total.
+// - `**\` … Combines `**` and `\\` behaviors, reserving three characters total.
+// - `,` … Inserts commas as thousands separators every three digits, occupying one character.
+// - `^^^^` … Following `#`, outputs the number in scientific notation.
+// - `_` … Escapes the following format character to output it as a literal.
+//
+// All other characters are output as-is. If the value exceeds the specified width, `%` is displayed instead.
+//
+// The *format_string* is parsed into segments called "format items" based on established rules. Each format item 
+// applies to an expression. If there are fewer expressions than format items, excess format items are ignored. 
+// If there are more expressions than format items, the items loop back to the start. When equal, each format item 
+// corresponds one-to-one with an expression.
+/////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////
 // ### `PRINT USING`文 {#print_using}
 // 
 // - 【機能】 数値や文字列を指定した書式で出力します。
