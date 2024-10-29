@@ -559,7 +559,7 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
     // 整数部をテキストに
     VskString digits = std::to_string((unsigned long long)d);
 
-    // カンマ(,)を追加
+    // 必要ならカンマ(,)を追加
     if (!m_scientific && m_comma) digits = vsk_add_commas(digits);
 
     // 通貨記号を追加
@@ -571,10 +571,11 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
 
     // 符号を追加
     if (m_pre_plus) {
-        if (minus) digits = "-" + digits;
-        else digits = "+" + digits;
+        digits = (minus ? "-" : "+") + digits;
     } else if (!m_post_plus && !m_post_minus) {
-        if (minus) digits = "-" + digits;
+        if (minus) {
+            digits = "-" + digits;
+        }
     }
 
     VskString ret; // 結果文字列
@@ -622,17 +623,9 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
 
     // 末尾に符号を追加
     if (m_post_plus) {
-        if (minus) {
-            ret += '-';
-        } else {
-            ret += '+';
-        }
+        ret += minus ? '-' : '+';
     } else if (m_post_minus) {
-        if (minus) {
-            ret += '-';
-        } else {
-            ret += ' ';
-        }
+        ret += minus ? '-' : ' ';
     }
 
     // 前後に文字列を追加
