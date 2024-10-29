@@ -527,7 +527,6 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
     int ep = 0;
     if (m_scientific) {
         if (d <= std::numeric_limits<decltype(d)>::epsilon()) {
-            ep = 0;
             d = 0;
         } else if (d < 1 || d >= 10) {
             ep = int(std::log10(d));
@@ -572,15 +571,10 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
 
     // 符号を追加
     if (m_pre_plus) {
-        if (minus) {
-            digits = "-" + digits;
-        } else {
-            digits = "+" + digits;
-        }
+        if (minus) digits = "-" + digits;
+        else digits = "+" + digits;
     } else if (!m_post_plus && !m_post_minus) {
-        if (minus) {
-            digits = "-" + digits;
-        }
+        if (minus) digits = "-" + digits;
     }
 
     VskString ret; // 結果文字列
@@ -588,12 +582,10 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
     // 必要ならば "0"を削る
     int pre_dot = m_width - precision - m_dot;
     if (pre_dot <= 1) {
-        if (digits == "-0")
-            digits = "-";
+        if (digits == "-0") digits = "-";
     }
     if (pre_dot == 0) {
-        if (digits == "0")
-            digits = "";
+        if (digits == "0") digits = "";
     }
 
     auto diff = m_width - precision - m_dot - int(digits.size());
