@@ -611,18 +611,11 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
 
     if (m_scientific) { // 指数表示なら、指数表示を追加
         char buf[16];
-        if (is_double) {
-            if (exponent < 0) {
-                std::sprintf(buf, "D-%02u", -exponent);
-            } else {
-                std::sprintf(buf, "D+%02u", exponent);
-            }
+        char ch = (is_double ? 'D' : 'E');
+        if (exponent < 0) {
+            std::sprintf(buf, "%c-%02u", ch, -exponent);
         } else {
-            if (exponent < 0) {
-                std::sprintf(buf, "E-%02u", -exponent);
-            } else {
-                std::sprintf(buf, "E+%02u", exponent);
-            }
+            std::sprintf(buf, "%c+%02u", ch, exponent);
         }
         ret += buf;
     }
