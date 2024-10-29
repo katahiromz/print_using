@@ -635,7 +635,7 @@ bool vsk_print_using(VskString& ret, const VskString& format_text, const VskAstL
 }
 
 extern "C"
-bool print_using(const char *format, ...)
+int print_using(const char *format, ...)
 {
     va_list va;
     va_start(va, format);
@@ -643,7 +643,7 @@ bool print_using(const char *format, ...)
     std::vector<VskFormatItem> items;
     if (!vsk_parse_formats(items, format) || items.empty()) {
         fprintf(stderr, "Illegal function call\n");
-        return false; // Failure
+        return 0; // Failure
     }
 
     VskString ret;
@@ -660,8 +660,7 @@ bool print_using(const char *format, ...)
         }
     }
 
-    std::puts(ret.c_str());
-    return true; // Success
+    return std::printf("%s\n", ret.c_str());
 }
 
 #ifndef NDEBUG
@@ -779,6 +778,8 @@ int main(void)
     vsk_add_commas_test();
     vsk_parse_formats_test();
     vsk_print_using_test();
+    print_using("##.# #.##", 2.0, 3.009);
+    print_using("& &O !OMPU@", "NEKO", "COM", "TER");
     return 0;
 }
 #endif
