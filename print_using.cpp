@@ -535,7 +535,7 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
         }
     }
 
-    // 小数部が長すぎないようにする
+    // 小数部が長すぎないようにする（標準関数でオーバーフローを避けるため）
     int precision = m_precision;
     if (precision > 256 - 2) precision = 256 - 2;
 
@@ -554,26 +554,20 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
         }
         std::strcpy(buf, "0.0");
     }
+    assert(buf[0] == '0' && buf[1] == '.');
+    VskString decimals = &buf[1];
 
     // 整数部をテキストに
     VskString digits = std::to_string((unsigned long long)d);
 
-    assert(buf[0] == '0' && buf[1] == '.');
-    VskString decimals = &buf[1];
-
-    if (!m_scientific && m_comma) {
-        digits = vsk_add_commas(digits);
-    }
+    // カンマ(,)を追加
+    if (!m_scientific && m_comma) digits = vsk_add_commas(digits);
 
     // 通貨記号を追加
 #ifdef JAPAN
-    if (m_yen) {
-        digits = '\\' + digits;
-    }
+    if (m_yen) digits = '\\' + digits;
 #else
-    if (m_dollar) {
-        digits = '$' + digits;
-    }
+    if (m_dollar) digits = '$' + digits;
 #endif
 
     // 符号を追加
