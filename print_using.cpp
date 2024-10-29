@@ -496,8 +496,10 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
     if (std::strcmp(buf, "0") == 0)
         std::strcpy(buf, "0.0");
     if (buf[0] == '1') { // 四捨五入で繰り上がり？
+        auto str0 = std::to_string((unsigned long long)d);
         d += 1;
-        if (d >= 10 && m_scientific) {
+        auto str1 = std::to_string((unsigned long long)d);
+        if (str0.size() < str1.size() && m_scientific) {
             ++ep;
             d /= 10;
         }
@@ -753,6 +755,8 @@ void vsk_print_using_test(void)
     vsk_print_using_test_entry(__LINE__, "<##.##^^^^>", { vsk_ast(+2.3) }, "< 2.30D+00>");
     vsk_print_using_test_entry(__LINE__, "<##.##^^^^>", { vsk_ast(-2.3) }, "<-2.30D+00>");
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(9.999f) }, "<1.0E+01>");
+    vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(99.999f) }, "<1.0E+02>");
+    vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(999.999f) }, "<1.0E+03>");
 #ifdef N88BASIC_STRICTLY
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(-1) }, "<-.1E+01>");
 #else
