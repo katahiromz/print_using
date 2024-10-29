@@ -524,13 +524,13 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
     if (std::isinf(d)) return minus ? "-INF" : " INF";
 
     // 指数表示の指数を取得し、指数に合わせる
-    int ep = 0;
+    int exponent = 0;
     if (m_scientific) {
         if (d <= std::numeric_limits<decltype(d)>::epsilon()) {
             d = 0;
         } else if (d < 1 || d >= 10) {
-            ep = int(std::log10(d));
-            d *= std::pow(10, -ep);
+            exponent = int(std::log10(d));
+            d *= std::pow(10, -exponent);
         }
     }
 
@@ -548,7 +548,7 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
         d += 1;
         auto str1 = std::to_string((unsigned long long)d);
         if (str0.size() < str1.size() && m_scientific) {
-            ++ep;
+            ++exponent;
             d /= 10;
         }
         std::strcpy(buf, "0.0");
@@ -612,16 +612,16 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
     if (m_scientific) { // 指数表示なら、指数表示を追加
         char buf[16];
         if (is_double) {
-            if (ep < 0) {
-                std::sprintf(buf, "D-%02u", -ep);
+            if (exponent < 0) {
+                std::sprintf(buf, "D-%02u", -exponent);
             } else {
-                std::sprintf(buf, "D+%02u", ep);
+                std::sprintf(buf, "D+%02u", exponent);
             }
         } else {
-            if (ep < 0) {
-                std::sprintf(buf, "E-%02u", -ep);
+            if (exponent < 0) {
+                std::sprintf(buf, "E-%02u", -exponent);
             } else {
-                std::sprintf(buf, "E+%02u", ep);
+                std::sprintf(buf, "E+%02u", exponent);
             }
         }
         ret += buf;
