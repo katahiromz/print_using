@@ -92,6 +92,7 @@ VskString vsk_add_commas(const VskString& digits) {
     VskString ret;
     const size_t siz = digits.size();
     for (size_t i = 0; i < siz; ++i) {
+        assert('0' <= digits[i] && digits[i] <= '9'); // 数字のみを仮定
         ret += digits[i];
         if ((siz - i > 3) && ((siz - i) % 3 == 1)) {
             ret += ',';
@@ -437,7 +438,10 @@ VskString vsk_format_pre_post(VskString s)
     VskString ret;
     for (size_t ib = 0; ib < s.size(); ++ib) {
         if (s[ib] == '_') {
-            ++ib;
+            if (ib + 1 < s.size()) {
+                ++ib;
+            }
+            continue;
         }
         ret += s[ib];
     }
@@ -468,11 +472,24 @@ VskString VskFormatItem::format_string(VskString s) const
 VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
     assert(m_type == UT_NUMERIC);
 
+    // 無効な数値 (NaN; Not a Number)か？
+    if (std::isnan(d)) {
+        return "NaN";
+    }
+
     // マイナスがあれば覚えておき、絶対値にする
     bool minus = false;
     if (d < 0) {
         minus = true;
         d = -d;
+    }
+
+    // 無限大（INFINITY）か？
+    if (std::isinf(d)) {
+        if (minus)
+            return "-INF";
+        else
+            return " INF";
     }
 
     // 指数表示の指数を取得し、指数に合わせる
