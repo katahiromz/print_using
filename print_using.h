@@ -1,3 +1,7 @@
+// print_using.h - N88-BASIC PRINT USING emulation in C++11
+// License: MIT
+/////////////////////////////////////////////////////////////////////////////
+
 #pragma once
 
 #define PRINT_USING_VERSION 103
