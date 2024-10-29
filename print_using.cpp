@@ -631,11 +631,8 @@ bool vsk_print_using(VskString& ret, const VskString& format_text, const VskAstL
 }
 
 extern "C"
-int print_using(const char *format, ...)
+int vprint_using(const char *format, va_list va)
 {
-    va_list va;
-    va_start(va, format);
-
     std::vector<VskFormatItem> items;
     if (!vsk_parse_formats(items, format) || items.empty()) {
         fprintf(stderr, "Illegal function call\n");
@@ -657,6 +654,16 @@ int print_using(const char *format, ...)
     }
 
     return std::printf("%s\n", ret.c_str());
+}
+
+extern "C"
+int print_using(const char *format, ...)
+{
+    va_list va;
+    va_start(va, format);
+    int ret = vprint_using(format, va);
+    va_end(va);
+    return ret;
 }
 
 #ifndef NDEBUG
