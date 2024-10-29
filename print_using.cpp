@@ -694,7 +694,6 @@ void vsk_print_using_test_entry(int line, const VskString& text, const VskAstLis
 
     std::cout << "Line " << line << ": '" << text << "', '" << ret << "', '" << expected << "'" << std::endl;
     if (ret != expected) {
-        std::cout << "FAILED!\n";
         assert(0);
         ++s_failure;
     }
@@ -784,7 +783,10 @@ void vsk_print_using_test(void)
     vsk_print_using_test_entry(__LINE__, "<#.>", { vsk_ast(-1) }, "<%-1.>");
     vsk_print_using_test_entry(__LINE__, "<#.>", { vsk_ast(0.2) }, "<0.>");
 
-    std::printf("failure: %d\n", s_failure);
+    if (s_failure)
+        std::printf("FAILED: %d\n", s_failure);
+    else
+        std::printf("SUCCESS!\n");
 }
 
 #endif // ndef NDEBUG
