@@ -84,6 +84,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <limits>
 #include <algorithm>
 
 typedef float VskSingle;
@@ -527,7 +528,7 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
     // 指数表示の指数を取得し、指数に合わせる
     int ep = 0;
     if (m_scientific) {
-        if (d == 0) {
+        if (d <= std::numeric_limits<decltype(d)>::epsilon()) {
             ep = 0;
             d = 0;
         } else if (d < 1 || d >= 10) {
