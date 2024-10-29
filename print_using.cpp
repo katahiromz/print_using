@@ -513,6 +513,7 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
         digits = vsk_add_commas(digits);
     }
 
+    // 通貨記号を追加
 #ifdef JAPAN
     if (m_yen) {
         digits = '\\' + digits;
@@ -523,6 +524,7 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
     }
 #endif
 
+    // 符号を追加
     if (m_pre_plus) {
         if (minus) {
             digits = "-" + digits;
@@ -535,7 +537,9 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
         }
     }
 
-    VskString ret;
+    VskString ret; // 結果文字列
+
+    // 必要ならば "0"を削る
     int pre_dot = m_width - m_precision - m_dot;
     if (pre_dot <= 1) {
         if (digits == "-0")
@@ -547,19 +551,19 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
     }
 
     auto diff = m_width - m_precision - m_dot - int(digits.size());
-    if (diff < 0) {
+    if (diff < 0) { // 桁が足りなければ "%"を出力
         ret = "%" + digits;
-    } else if (diff > 0) {
+    } else if (diff > 0) { // 余裕があれば文字で埋める
         if (m_asterisk) {
             ret += VskString(diff, '*') + digits;
         } else {
             ret += VskString(diff, ' ') + digits;
         }
-    } else {
+    } else { // その他の場合はそのまま
         ret = digits;
     }
 
-    if (m_dot) {
+    if (m_dot) { // 小数点があるなら、小数点と小数部を追加
         if (m_precision > 0) {
             ret += decimals;
         } else {
@@ -567,32 +571,25 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
         }
     }
 
-    if (m_scientific) {
+    if (m_scientific) { // 指数表示なら、指数表示を追加
         char buf[16];
-        if (d == 0) {
-            if (is_double) {
-                std::strcpy(buf, "D+00");
+        if (is_double) {
+            if (ep < 0) {
+                std::sprintf(buf, "D-%02u", -ep);
             } else {
-                std::strcpy(buf, "E+00");
+                std::sprintf(buf, "D+%02u", ep);
             }
         } else {
-            if (is_double) {
-                if (ep < 0) {
-                    std::sprintf(buf, "D-%02u", -ep);
-                } else {
-                    std::sprintf(buf, "D+%02u", ep);
-                }
+            if (ep < 0) {
+                std::sprintf(buf, "E-%02u", -ep);
             } else {
-                if (ep < 0) {
-                    std::sprintf(buf, "E-%02u", -ep);
-                } else {
-                    std::sprintf(buf, "E+%02u", ep);
-                }
+                std::sprintf(buf, "E+%02u", ep);
             }
         }
         ret += buf;
     }
 
+    // 末尾に符号を追加
     if (m_post_plus) {
         if (minus) {
             ret += '-';
@@ -607,6 +604,7 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
         }
     }
 
+    // 前後に文字列を追加
     return vsk_format_pre_post(m_pre) + ret + vsk_format_pre_post(m_post);
 }
 
