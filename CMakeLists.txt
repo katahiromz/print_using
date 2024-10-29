@@ -18,6 +18,9 @@ endif()
 # print_using.exe
 add_executable(print_using print_using.cpp)
 target_compile_definitions(print_using PRIVATE -DUNITTEST)
+if(MSVC)
+    target_link_options(print_using PRIVATE /MANIFEST:NO)
+endif()
 
 # libprint_using.a
 add_library(libprint_using STATIC print_using.cpp)
