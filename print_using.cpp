@@ -253,8 +253,14 @@ size_t VskFormatItem::next_format(const VskString& str, size_t ib0, size_t& ib1)
             clear();
             ib = parse_numeric(str, ib);
             continue;
+#ifdef JAPAN
         case '\\':
-            if (std::memcmp(&str[ib], "\\\\", 2) != 0) {
+            if (std::memcmp(&str[ib], "\\\\", 2) != 0)
+#else
+        case '$':
+            if (std::memcmp(&str[ib], "$$", 2) != 0)
+#endif
+            {
                 ++ib;
                 continue;
             }
@@ -268,7 +274,12 @@ size_t VskFormatItem::next_format(const VskString& str, size_t ib0, size_t& ib1)
             ib = parse_numeric(str, ib);
             continue;
         case '*':
-            if (std::memcmp(&str[ib], "**\\", 3) == 0) {
+#ifdef JAPAN
+            if (std::memcmp(&str[ib], "**\\", 3) == 0)
+#else
+            if (std::memcmp(&str[ib], "**$", 3) == 0)
+#endif
+            {
                 if (ib0 < ib && str[ib - 1] == '+') {
                     --ib;
                 }
