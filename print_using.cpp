@@ -320,9 +320,7 @@ bool vsk_parse_formats(std::vector<VskFormatItem>& items, const VskString& str)
         item.m_pre = str.substr(ib0, ib1 - ib0);
         item.m_text = str.substr(ib1, ib3 - ib1);
         item.m_post = str.substr(ib3, ib2 - ib3);
-#ifndef NDEBUG
-        printf("'%s' '%s' '%s'\n", item.m_pre.c_str(), item.m_text.c_str(), item.m_post.c_str());
-#endif
+        //printf("'%s' '%s' '%s'\n", item.m_pre.c_str(), item.m_text.c_str(), item.m_post.c_str());
         items.push_back(item);
         ib0 = ib2;
     }
