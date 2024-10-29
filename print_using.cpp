@@ -518,19 +518,11 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
     }
 
     // マイナスがあれば覚えておき、絶対値にする
-    bool minus = false;
-    if (d < 0) {
-        minus = true;
-        d = -d;
-    }
+    bool minus = std::signbit(d);
+    if (minus) d = -d;
 
     // 無限大（INFINITY）か？
-    if (std::isinf(d)) {
-        if (minus)
-            return "-INF";
-        else
-            return " INF";
-    }
+    if (std::isinf(d)) return minus ? "-INF" : " INF";
 
     // 指数表示の指数を取得し、指数に合わせる
     int ep = 0;
@@ -538,10 +530,7 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
         if (d == 0) {
             ep = 0;
             d = 0;
-        } else if (d < 1) {
-            ep = int(std::log10(d));
-            d *= std::pow(10, -ep);
-        } else if (d >= 10) {
+        } else if (d < 1 || d >= 10) {
             ep = int(std::log10(d));
             d *= std::pow(10, -ep);
         }
