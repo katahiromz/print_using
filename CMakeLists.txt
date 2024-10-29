@@ -13,6 +13,12 @@ if(JAPAN)
     add_definitions(-DJAPAN)
 endif()
 
+# Source code UTF-8 support
+if(MSVC)
+    set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   /utf-8")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8")
+endif()
+
 ##############################################################################
 
 # print_using.exe
