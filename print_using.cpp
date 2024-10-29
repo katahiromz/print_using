@@ -618,7 +618,7 @@ bool vsk_print_using(VskString& ret, const VskString& format_text, const VskAstL
     std::vector<VskFormatItem> items;
     if (!vsk_parse_formats(items, format_text)) {
         assert(0);
-        return false; // 失敗
+        return false; // Failure
     }
 
     for (size_t iarg = 0; iarg < args.size(); ++iarg) {
@@ -628,12 +628,12 @@ bool vsk_print_using(VskString& ret, const VskString& format_text, const VskAstL
         } else if (item.m_type == UT_NUMERIC) {
             VskDouble d;
             if (!vsk_dbl(d, args[iarg]))
-                return false; // Failurue
+                return false; // Failure
             ret += item.format_numeric(d, (args[iarg]->m_type == TYPE_DOUBLE));
         } else {
             VskString str;
             if (!vsk_str(str, args[iarg]))
-                return false; // Failurue
+                return false; // Failure
             ret += item.format_string(str);
         }
     }
