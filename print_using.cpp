@@ -729,9 +729,8 @@ void vsk_print_using_test_entry(int line, const VskString& text, const VskAstLis
         return;
     }
 
-    std::cout << "Line " << line << ": '" << text << "', '" << ret << "', '" << expected << "'" << std::endl;
     if (ret != expected) {
-        assert(0);
+        std::cout << "Line " << line << ": '" << text << "', '" << ret << "', '" << expected << "'" << std::endl;
         ++s_failure;
     }
 }
@@ -805,6 +804,12 @@ void vsk_print_using_test(void)
     vsk_print_using_test_entry(__LINE__, "<#.>", { vsk_ast(-1) }, "<%-1.>");
     vsk_print_using_test_entry(__LINE__, "<#.>", { vsk_ast(0.2) }, "<0.>");
 
+#ifdef JAPAN
+    vsk_print_using_test_entry(__LINE__, "<\\\\###._->", { vsk_ast(123.456) }, "< \\123.->");
+#else
+    vsk_print_using_test_entry(__LINE__, "<$$###._->", { vsk_ast(123.456) }, "< $123.->");
+#endif
+
     if (s_failure)
         std::printf("FAILED: %d\n", s_failure);
     else
@@ -819,8 +824,6 @@ int main(void)
     vsk_add_commas_test();
     vsk_parse_formats_test();
     vsk_print_using_test();
-    print_using("##.# #.##", 2.0, 3.009);
-    print_using("& &O !OMPU@", "NEKO", "COM", "TER");
     return 0;
 }
 #endif
