@@ -528,9 +528,25 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const {
     if (m_scientific) {
         if (d <= std::numeric_limits<decltype(d)>::epsilon()) {
             d = 0;
-        } else if (d < 1 || d >= 10) {
-            exponent = int(std::log10(d));
+        } else {
+            exponent = int(std::floor(std::log10(d)));
             d *= std::pow(10, -exponent);
+            
+            // フォーマット幅が2以上の場合は1.0以上10未満に正規化
+            // それ以外の場合は0.1以上1未満に正規化
+            if (m_width - m_precision - m_dot >= 2) {
+                // 1未満の場合は調整
+                if (d < 1.0) {
+                    --exponent;
+                    d *= 10;
+                }
+            } else {
+                // 1以上の場合は調整
+                if (d >= 1.0) {
+                    d *= 0.1;
+                    ++exponent;
+                }
+            }
         }
     }
 
@@ -761,13 +777,8 @@ void vsk_print_using_test(void)
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(0) }, "<0.0E+00>");
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(0.05f) }, "<0.5E-01>");
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(0.999f) }, "<1.0E+00>");
-#ifdef N88BASIC_STRICTLY
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(1) }, "<0.1E+01>");
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(1.01f) }, "<0.1E+01>");
-#else
-    vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(1) }, "<1.0E+00>");
-    vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(1.01f) }, "<1.0E+00>");
-#endif
     vsk_print_using_test_entry(__LINE__, "<##.#^^^^>", { vsk_ast(1) }, "< 1.0E+00>");
     vsk_print_using_test_entry(__LINE__, "<##.#^^^^>", { vsk_ast(1.01f) }, "< 1.0E+00>");
     vsk_print_using_test_entry(__LINE__, "<##.##^^^^>", { vsk_ast(+2.3f) }, "< 2.30E+00>");
@@ -777,21 +788,11 @@ void vsk_print_using_test(void)
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(9.999f) }, "<1.0E+01>");
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(99.999f) }, "<1.0E+02>");
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(999.999f) }, "<1.0E+03>");
-#ifdef N88BASIC_STRICTLY
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(-1) }, "<-.1E+01>");
-#else
-    vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(-1) }, "<%-1.0E+00>");
-#endif
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(0) }, "<0.0E+00>");
-#ifdef N88BASIC_STRICTLY
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(10) }, "<0.1E+02>");
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(100) }, "<0.1E+03>");
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(1000) }, "<0.1E+04>");
-#else
-    vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(10) }, "<1.0E+01>");
-    vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(100) }, "<1.0E+02>");
-    vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(1000) }, "<1.0E+03>");
-#endif
     vsk_print_using_test_entry(__LINE__, "<#.##^^^^>", { vsk_ast(0.002f) }, "<0.20E-02>");
 
     vsk_print_using_test_entry(__LINE__, "<#.##->", { vsk_ast(-0.2) }, "<0.20->");
