@@ -811,6 +811,7 @@ void vsk_print_using_test(void)
     vsk_print_using_test_entry(__LINE__, "<#_->", { vsk_ast(123.456) }, "<%123->");
     vsk_print_using_test_entry(__LINE__, "#._", { vsk_ast(123.456) }, "%123._");
     vsk_print_using_test_entry(__LINE__, "<_#_@@__>", { vsk_ast("ABC") }, "<#@ABC_>");
+    vsk_print_using_test_entry(__LINE__, "_#_@@_", { vsk_ast("ABC") }, "#@ABC_");
 #ifdef JAPAN
     vsk_print_using_test_entry(__LINE__, "<\\\\###._->", { vsk_ast(123.456) }, "< \\123.->");
 #else
