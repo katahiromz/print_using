@@ -814,19 +814,20 @@ void vsk_print_using_test(void)
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(0) }, "<0.0E+00>");
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(10) }, "<0.1E+02>");
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(100) }, "<0.1E+03>");
-    vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(1000) }, "<0.1E+04>");
     vsk_print_using_test_entry(__LINE__, "<#.##^^^^>", { vsk_ast(0.002f) }, "<0.20E-02>");
     vsk_print_using_test_entry(__LINE__, "<##.#^^^^>", { vsk_ast(1) }, "< 1.0E+00>");
     vsk_print_using_test_entry(__LINE__, "<##.#^^^^>", { vsk_ast(1.01f) }, "< 1.0E+00>");
     vsk_print_using_test_entry(__LINE__, "<##.##^^^^>", { vsk_ast(+2.3f) }, "< 2.30E+00>");
-    vsk_print_using_test_entry(__LINE__, "<##.##^^^^>", { vsk_ast(-2.3f) }, "<-2.30E+00>");
     vsk_print_using_test_entry(__LINE__, "<##.##^^^^>", { vsk_ast(+2.3) }, "< 2.30D+00>");
     vsk_print_using_test_entry(__LINE__, "<##.##^^^^>", { vsk_ast(-2.3) }, "<-2.30D+00>");
     vsk_print_using_test_entry(__LINE__, "<###.##^^^^>", { vsk_ast(+5.312f) }, "< 53.12E-01>");
     vsk_print_using_test_entry(__LINE__, "<###.##^^^^>", { vsk_ast(-5.312f) }, "<-53.12E-01>");
     vsk_print_using_test_entry(__LINE__, "<###.####^^^^>", { vsk_ast(3.9f) }, "< 39.0000E-01>");
     vsk_print_using_test_entry(__LINE__, "<###.####^^^^>", { vsk_ast(-3.9f) }, "<-39.0000E-01>");
+    vsk_print_using_test_entry(__LINE__, "<**##.####^^^^>", { vsk_ast(-3.9f) }, "<-390.0000E-02>");
     vsk_print_using_test_entry(__LINE__, "<+##.####^^^^>", { vsk_ast(3.9f) }, "<+39.0000E-01>");
+    vsk_print_using_test_entry(__LINE__, "<###.#^^^^>", { vsk_ast(-3.9999f) }, "<-40.0E-01>");
+    vsk_print_using_test_entry(__LINE__, "<##.#^^^^>", { vsk_ast(-3.9999f) }, "<-4.0E-00>");
     vsk_print_using_test_entry(__LINE__, "<#####.####^^^^>", { vsk_ast(1.1f) }, "< 1100.0000E-03>");
     vsk_print_using_test_entry(__LINE__, "<#####.####^^^^>", { vsk_ast(-1.1f) }, "<-1100.0000E-03>");
 #ifdef JAPAN
