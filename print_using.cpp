@@ -843,6 +843,12 @@ void vsk_print_using_test(void)
     vsk_print_using_test_entry(__LINE__, "<$$###._->", { vsk_ast(123.456) }, "< $123.->");
 #endif
 
+    vsk_print_using_test_entry(__LINE__, "<#####.####^^^^>", { vsk_ast(1.1f) }, "< 1100.0000E-03>");
+    vsk_print_using_test_entry(__LINE__, "<#####.####^^^^>", { vsk_ast(-1.1f) }, "<-1100.0000E-03>");
+    vsk_print_using_test_entry(__LINE__, "<###.####^^^^>", { vsk_ast(3.9f) }, "< 39.0000E-01>");
+    vsk_print_using_test_entry(__LINE__, "<###.####^^^^>", { vsk_ast(-3.9f) }, "<-39.0000E-01>");
+    vsk_print_using_test_entry(__LINE__, "<+##.####^^^^>", { vsk_ast(3.9f) }, "<+39.0000E-01>");
+
     if (s_failure)
         std::printf("FAILED: %d\n", s_failure);
 }
