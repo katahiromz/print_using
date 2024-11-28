@@ -389,10 +389,10 @@ void vsk_parse_formats_test(void)
     std::vector<VskFormatItem> items;
     assert(!vsk_parse_formats(items, ""));
 
-    bool out = vsk_parse_formats(items, "\r");
+    bool out = vsk_parse_formats(items, "\n");
     assert(out);
     assert(items.size() == 1);
-    assert(items[0].m_pre == "\r");
+    assert(items[0].m_pre == "\n");
     assert(items[0].m_post == "");
 
     out = vsk_parse_formats(items, "## ##");
