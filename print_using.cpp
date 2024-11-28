@@ -807,12 +807,6 @@ void vsk_print_using_test(void)
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(0.999f) }, "<1.0E+00>");
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(1) }, "<0.1E+01>");
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(1.01f) }, "<0.1E+01>");
-    vsk_print_using_test_entry(__LINE__, "<##.#^^^^>", { vsk_ast(1) }, "< 1.0E+00>");
-    vsk_print_using_test_entry(__LINE__, "<##.#^^^^>", { vsk_ast(1.01f) }, "< 1.0E+00>");
-    vsk_print_using_test_entry(__LINE__, "<##.##^^^^>", { vsk_ast(+2.3f) }, "< 2.30E+00>");
-    vsk_print_using_test_entry(__LINE__, "<##.##^^^^>", { vsk_ast(-2.3f) }, "<-2.30E+00>");
-    vsk_print_using_test_entry(__LINE__, "<##.##^^^^>", { vsk_ast(+2.3) }, "< 2.30D+00>");
-    vsk_print_using_test_entry(__LINE__, "<##.##^^^^>", { vsk_ast(-2.3) }, "<-2.30D+00>");
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(9.999f) }, "<1.0E+01>");
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(99.999f) }, "<1.0E+02>");
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(999.999f) }, "<1.0E+03>");
@@ -822,6 +816,24 @@ void vsk_print_using_test(void)
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(100) }, "<0.1E+03>");
     vsk_print_using_test_entry(__LINE__, "<#.#^^^^>", { vsk_ast(1000) }, "<0.1E+04>");
     vsk_print_using_test_entry(__LINE__, "<#.##^^^^>", { vsk_ast(0.002f) }, "<0.20E-02>");
+    vsk_print_using_test_entry(__LINE__, "<##.#^^^^>", { vsk_ast(1) }, "< 1.0E+00>");
+    vsk_print_using_test_entry(__LINE__, "<##.#^^^^>", { vsk_ast(1.01f) }, "< 1.0E+00>");
+    vsk_print_using_test_entry(__LINE__, "<##.##^^^^>", { vsk_ast(+2.3f) }, "< 2.30E+00>");
+    vsk_print_using_test_entry(__LINE__, "<##.##^^^^>", { vsk_ast(-2.3f) }, "<-2.30E+00>");
+    vsk_print_using_test_entry(__LINE__, "<##.##^^^^>", { vsk_ast(+2.3) }, "< 2.30D+00>");
+    vsk_print_using_test_entry(__LINE__, "<##.##^^^^>", { vsk_ast(-2.3) }, "<-2.30D+00>");
+    vsk_print_using_test_entry(__LINE__, "<###.##^^^^>", { vsk_ast(+5.312f) }, "< 53.12E-01>");
+    vsk_print_using_test_entry(__LINE__, "<###.##^^^^>", { vsk_ast(-5.312f) }, "<-53.12E-01>");
+    vsk_print_using_test_entry(__LINE__, "<###.####^^^^>", { vsk_ast(3.9f) }, "< 39.0000E-01>");
+    vsk_print_using_test_entry(__LINE__, "<###.####^^^^>", { vsk_ast(-3.9f) }, "<-39.0000E-01>");
+    vsk_print_using_test_entry(__LINE__, "<+##.####^^^^>", { vsk_ast(3.9f) }, "<+39.0000E-01>");
+    vsk_print_using_test_entry(__LINE__, "<#####.####^^^^>", { vsk_ast(1.1f) }, "< 1100.0000E-03>");
+    vsk_print_using_test_entry(__LINE__, "<#####.####^^^^>", { vsk_ast(-1.1f) }, "<-1100.0000E-03>");
+#ifdef JAPAN
+    vsk_print_using_test_entry(__LINE__, "<\\\\###.#^^^^>", { vsk_ast(123.456) }, "<\\1234.6E-01>");
+#else
+    vsk_print_using_test_entry(__LINE__, "<$$###.#^^^^>", { vsk_ast(123.456) }, "<$1234.6E-01>");
+#endif
 
     vsk_print_using_test_entry(__LINE__, "<#.##->", { vsk_ast(-0.2) }, "<0.20->");
     vsk_print_using_test_entry(__LINE__, "<.#+>", { vsk_ast(-0.2) }, "<.2->");
@@ -842,12 +854,6 @@ void vsk_print_using_test(void)
 #else
     vsk_print_using_test_entry(__LINE__, "<$$###._->", { vsk_ast(123.456) }, "< $123.->");
 #endif
-
-    vsk_print_using_test_entry(__LINE__, "<#####.####^^^^>", { vsk_ast(1.1f) }, "< 1100.0000E-03>");
-    vsk_print_using_test_entry(__LINE__, "<#####.####^^^^>", { vsk_ast(-1.1f) }, "<-1100.0000E-03>");
-    vsk_print_using_test_entry(__LINE__, "<###.####^^^^>", { vsk_ast(3.9f) }, "< 39.0000E-01>");
-    vsk_print_using_test_entry(__LINE__, "<###.####^^^^>", { vsk_ast(-3.9f) }, "<-39.0000E-01>");
-    vsk_print_using_test_entry(__LINE__, "<+##.####^^^^>", { vsk_ast(3.9f) }, "<+39.0000E-01>");
 
     if (s_failure)
         std::printf("FAILED: %d\n", s_failure);
