@@ -883,7 +883,7 @@ int main(int argc, char **argv)
 
     VskString out;
     vsk_print_using(out, argv[1], args);
-    printf("%s\n", out.c_str());
+    std::puts(out.c_str());
 
     return 0;
 }
