@@ -1,9 +1,11 @@
-﻿# print_using by katahiromz
+﻿(Japanese, UTF-8)
+
+# print_using by katahiromz
 
 ## 概要
 
-クライアントの依頼に基づいて、N88-BASIC風の`PRINT USING`文をC++11で
-エミュレートするプログラム兼ライブラリを製作しました。
+N88-BASIC風の`PRINT USING`文をエミュレートするC++11のプログラム兼ライブラリを
+製作しました。
 
 ## 使い方
 
@@ -21,3 +23,30 @@
 ## 連絡先
 
 - 片山博文MZ <katayama.hirofumi.mz@gmail.com>
+
+---
+
+(English)
+
+# print_using by katahiromz
+
+## Overview
+
+I have created a program and library that emulates the N88-BASIC-like `PRINT USING` statement in C++11.
+
+## Usage
+
+1. `#include` the `print_using.h`.
+2. Link the `libprint_using.a`.
+3. Build using a C++ compiler and/or CMake.
+4. Read the function declarations in `print_using.h` and try calling the functions that seem useful.
+
+## Copyright Notice and Disclaimer
+
+- Copyright (C) 2024 katahiromz.
+- License: MIT
+- This software is provided "as-is" without any warranty.
+
+## Contact
+
+- Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
