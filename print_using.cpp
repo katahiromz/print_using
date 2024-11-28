@@ -684,13 +684,12 @@ bool vsk_print_using(VskString& out, const VskString& format_text, const VskAstL
     return true; // Success
 }
 
-extern "C"
-int vprint_using(const char *format, va_list va)
+static VskString vstr_print_using(const char *format, va_list va)
 {
     std::vector<VskFormatItem> items;
     if (!vsk_parse_formats(items, format) || items.empty()) {
         fprintf(stderr, "Illegal function call\n");
-        return 0; // Failure
+        return ""; // Failure
     }
 
     VskString out;
@@ -707,6 +706,22 @@ int vprint_using(const char *format, va_list va)
         }
     }
 
+    return out;
+}
+
+extern "C"
+void vsprint_using(char *buffer, size_t buffer_size, const char *format, va_list va)
+{
+    VskString out = vstr_print_using(format, va);
+    std::strncpy(buffer, out.c_str(), buffer_size);
+    if (buffer_size > 0)
+        buffer[buffer_size - 1] = 0;
+}
+
+extern "C"
+int vprint_using(const char *format, va_list va)
+{
+    VskString out = vstr_print_using(format, va);
     return std::printf("%s\n", out.c_str());
 }
 

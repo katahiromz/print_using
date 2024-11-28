@@ -4,7 +4,7 @@
 
 #pragma once
 
-#define PRINT_USING_VERSION 110
+#define PRINT_USING_VERSION 111
 
 #ifdef __cplusplus
 extern "C" {
@@ -12,6 +12,7 @@ extern "C" {
 
 int print_using(const char *format, ...);
 int vprint_using(const char *format, va_list va);
+void vsprint_using(char *buffer, size_t buffer_size, const char *format, va_list va);
 
 #ifdef __cplusplus
 } // extern "C"
