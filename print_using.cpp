@@ -536,21 +536,22 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const
         } else {
             exponent = int(std::floor(std::log10(d)));
             d *= std::pow(10, -exponent);
-            
-            // フォーマット幅が2以上の場合は1.0以上10未満に正規化
-            // それ以外の場合は0.1以上1未満に正規化
-            if (m_width - m_precision - m_dot >= 2) {
-                // 1未満の場合は調整
-                if (d < 1.0) {
+
+            auto delta = m_width - m_precision - m_dot - 2;
+            if (delta > 0) {
+                do
+                {
                     --exponent;
                     d *= 10;
-                }
-            } else {
-                // 1以上の場合は調整
-                if (d >= 1.0) {
-                    d *= 0.1;
+                    --delta;
+                } while (delta > 0);
+            } else if (delta < 0) {
+                do
+                {
                     ++exponent;
-                }
+                    d /= 10;
+                    ++delta;
+                } while (delta < 0);
             }
         }
     }
@@ -827,13 +828,13 @@ void vsk_print_using_test(void)
     vsk_print_using_test_entry(__LINE__, "<**##.####^^^^>", { vsk_ast(-3.9f) }, "<-390.0000E-02>");
     vsk_print_using_test_entry(__LINE__, "<+##.####^^^^>", { vsk_ast(3.9f) }, "<+39.0000E-01>");
     vsk_print_using_test_entry(__LINE__, "<###.#^^^^>", { vsk_ast(-3.9999f) }, "<-40.0E-01>");
-    vsk_print_using_test_entry(__LINE__, "<##.#^^^^>", { vsk_ast(-3.9999f) }, "<-4.0E-00>");
+    vsk_print_using_test_entry(__LINE__, "<##.#^^^^>", { vsk_ast(-3.9999f) }, "<-4.0E+00>");
     vsk_print_using_test_entry(__LINE__, "<#####.####^^^^>", { vsk_ast(1.1f) }, "< 1100.0000E-03>");
     vsk_print_using_test_entry(__LINE__, "<#####.####^^^^>", { vsk_ast(-1.1f) }, "<-1100.0000E-03>");
 #ifdef JAPAN
-    vsk_print_using_test_entry(__LINE__, "<\\\\###.#^^^^>", { vsk_ast(123.456) }, "<\\1234.6E-01>");
+    vsk_print_using_test_entry(__LINE__, "<\\\\###.#^^^^>", { vsk_ast(123.456f) }, "<\\1234.6E-01>");
 #else
-    vsk_print_using_test_entry(__LINE__, "<$$###.#^^^^>", { vsk_ast(123.456) }, "<$1234.6E-01>");
+    vsk_print_using_test_entry(__LINE__, "<$$###.#^^^^>", { vsk_ast(123.456f) }, "<$1234.6E-01>");
 #endif
 
     vsk_print_using_test_entry(__LINE__, "<#.##->", { vsk_ast(-0.2) }, "<0.20->");
