@@ -86,6 +86,7 @@
 #include <memory>
 #include <limits>
 #include <algorithm>
+#include "print_using.h"
 
 typedef float VskSingle;
 typedef double VskDouble;
@@ -130,16 +131,16 @@ struct VskFormatItem {
 
 // 数値文字列にカンマ区切りを追加
 VskString vsk_add_commas(const VskString& digits) {
-    VskString ret;
+    VskString out;
     const size_t siz = digits.size();
     for (size_t i = 0; i < siz; ++i) {
         assert('0' <= digits[i] && digits[i] <= '9'); // 数字のみを仮定
-        ret += digits[i];
+        out += digits[i];
         if ((siz - i > 3) && ((siz - i) % 3 == 1)) {
-            ret += ',';
+            out += ',';
         }
     }
-    return ret;
+    return out;
 }
 
 #ifndef NDEBUG
@@ -388,14 +389,14 @@ void vsk_parse_formats_test(void)
     std::vector<VskFormatItem> items;
     assert(!vsk_parse_formats(items, ""));
 
-    bool ret = vsk_parse_formats(items, "\r");
-    assert(ret);
+    bool out = vsk_parse_formats(items, "\r");
+    assert(out);
     assert(items.size() == 1);
     assert(items[0].m_pre == "\r");
     assert(items[0].m_post == "");
 
-    ret = vsk_parse_formats(items, "## ##");
-    assert(ret);
+    out = vsk_parse_formats(items, "## ##");
+    assert(out);
     assert(items.size() == 2);
     assert(items[0].m_pre == "");
     assert(items[0].m_text == "##");
@@ -404,8 +405,8 @@ void vsk_parse_formats_test(void)
     assert(items[1].m_text == "##");
     assert(items[1].m_post == "");
 
-    ret = vsk_parse_formats(items, "### & & ###");
-    assert(ret);
+    out = vsk_parse_formats(items, "### & & ###");
+    assert(out);
     assert(items.size() == 3);
     assert(items[0].m_pre == "");
     assert(items[0].m_text == "###");
@@ -477,19 +478,19 @@ bool vsk_dbl(VskDouble& dbl, VskAstPtr arg)
 // 文字列書式を評価する
 VskString vsk_format_pre_post(VskString s)
 {
-    VskString ret;
+    VskString out;
     for (size_t ib = 0; ib < s.size(); ++ib) {
         if (s[ib] == '_') {
             if (ib + 1 < s.size()) {
-                ret += s[++ib];
+                out += s[++ib];
             } else {
-                ret += '_';
+                out += '_';
             }
             continue;
         }
-        ret += s[ib];
+        out += s[ib];
     }
-    return ret;
+    return out;
 }
 
 // 文字列書式を評価する
@@ -497,19 +498,19 @@ VskString VskFormatItem::format_string(VskString s) const
 {
     assert(m_type != UT_NUMERIC);
 
-    VskString ret = vsk_format_pre_post(m_pre);
+    VskString out = vsk_format_pre_post(m_pre);
 
     if (m_text[0] == '@') {
-        ret += s;
+        out += s;
     } else if (m_text[0] == '!') {
-        ret += s[0];
+        out += s[0];
     } else if (m_text[0] == '&') {
         s.resize(m_text.size(), ' ');
-        ret += s;
+        out += s;
     }
 
-    ret += vsk_format_pre_post(m_post);
-    return ret;
+    out += vsk_format_pre_post(m_post);
+    return out;
 }
 
 // 数値書式を評価する
@@ -598,7 +599,7 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const
         }
     }
 
-    VskString ret; // 結果文字列
+    VskString out; // 結果文字列
 
     // 必要ならば "0"を削る
     int pre_dot = m_width - precision - m_dot;
@@ -611,22 +612,22 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const
 
     auto diff = m_width - precision - m_dot - int(digits.size());
     if (diff < 0) { // 桁が足りなければ "%"を出力
-        ret = "%" + digits;
+        out = "%" + digits;
     } else if (diff > 0) { // 余裕があれば文字で埋める
         if (m_asterisk) {
-            ret += VskString(diff, '*') + digits;
+            out += VskString(diff, '*') + digits;
         } else {
-            ret += VskString(diff, ' ') + digits;
+            out += VskString(diff, ' ') + digits;
         }
     } else { // その他の場合はそのまま
-        ret = digits;
+        out = digits;
     }
 
     if (m_dot) { // 小数点があるなら、小数点と小数部を追加
         if (precision > 0) {
-            ret += decimals;
+            out += decimals;
         } else {
-            ret += '.';
+            out += '.';
         }
     }
 
@@ -638,24 +639,24 @@ VskString VskFormatItem::format_numeric(VskDouble d, bool is_double) const
         } else {
             std::sprintf(buf, "%c+%02u", ch, exponent);
         }
-        ret += buf;
+        out += buf;
     }
 
     // 末尾に符号を追加
     if (m_post_plus) {
-        ret += minus ? '-' : '+';
+        out += minus ? '-' : '+';
     } else if (m_post_minus) {
-        ret += minus ? '-' : ' ';
+        out += minus ? '-' : ' ';
     }
 
     // 前後に文字列を追加
-    return vsk_format_pre_post(m_pre) + ret + vsk_format_pre_post(m_post);
+    return vsk_format_pre_post(m_pre) + out + vsk_format_pre_post(m_post);
 }
 
 // PRINT USING文をエミュレートする
-bool vsk_print_using(VskString& ret, const VskString& format_text, const VskAstList& args)
+bool vsk_print_using(VskString& out, const VskString& format_text, const VskAstList& args)
 {
-    ret.clear();
+    out.clear();
 
     std::vector<VskFormatItem> items;
     if (!vsk_parse_formats(items, format_text)) {
@@ -666,17 +667,17 @@ bool vsk_print_using(VskString& ret, const VskString& format_text, const VskAstL
     for (size_t iarg = 0; iarg < args.size(); ++iarg) {
         auto& item = items[iarg % items.size()];
         if (item.m_type == UT_UNKNOWN) {
-            ret += item.format_string("");
+            out += item.format_string("");
         } else if (item.m_type == UT_NUMERIC) {
             VskDouble d;
             if (!vsk_dbl(d, args[iarg]))
                 return false; // Failure
-            ret += item.format_numeric(d, (args[iarg]->m_type == TYPE_DOUBLE));
+            out += item.format_numeric(d, (args[iarg]->m_type == TYPE_DOUBLE));
         } else {
             VskString str;
             if (!vsk_str(str, args[iarg]))
                 return false; // Failure
-            ret += item.format_string(str);
+            out += item.format_string(str);
         }
     }
 
@@ -692,21 +693,21 @@ int vprint_using(const char *format, va_list va)
         return 0; // Failure
     }
 
-    VskString ret;
+    VskString out;
     for (size_t iItem = 0; iItem < items.size(); ++iItem) {
         auto& item = items[iItem];
         if (item.m_type == UT_UNKNOWN) {
-            ret += item.format_string("");
+            out += item.format_string("");
         } else if (item.m_type == UT_NUMERIC) {
             VskDouble d = va_arg(va, VskDouble);
-            ret += item.format_numeric(d, true);
+            out += item.format_numeric(d, true);
         } else {
             VskString str = va_arg(va, const char *);
-            ret += item.format_string(str);
+            out += item.format_string(str);
         }
     }
 
-    return std::printf("%s\n", ret.c_str());
+    return std::printf("%s\n", out.c_str());
 }
 
 extern "C"
@@ -726,15 +727,15 @@ static int s_failure = 0; // vsk_print_usingのテストの失敗回数
 // vsk_print_usingのテスト項目
 void vsk_print_using_test_entry(int line, const VskString& text, const VskAstList& args, const VskString& expected)
 {
-    VskString ret;
-    if (!vsk_print_using(ret, text, args))
+    VskString out;
+    if (!vsk_print_using(out, text, args))
     {
         std::cout << "failed" << std::endl;
         return;
     }
 
-    if (ret != expected) {
-        std::cout << "Line " << line << ": '" << text << "', '" << ret << "', '" << expected << "'" << std::endl;
+    if (out != expected) {
+        std::cout << "Line " << line << ": '" << text << "', '" << out << "', '" << expected << "'" << std::endl;
         ++s_failure;
     }
 }
@@ -820,18 +821,46 @@ void vsk_print_using_test(void)
 
     if (s_failure)
         std::printf("FAILED: %d\n", s_failure);
-    else
-        std::printf("SUCCESS!\n");
 }
 
 #endif // ndef NDEBUG
 
-#ifdef UNITTEST
-int main(void)
+#ifdef PRINT_USING_EXE
+int main(int argc, char **argv)
 {
+#ifndef NDEBUG
     vsk_add_commas_test();
     vsk_parse_formats_test();
     vsk_print_using_test();
+#endif
+
+    if (argc < 3)
+    {
+        std::printf("print_using Version %u\n\n", PRINT_USING_VERSION);
+        std::printf("Usage: print_using format parameters\n");
+        return 1;
+    }
+
+    VskAstList args;
+    for (int iarg = 2; iarg < argc; ++iarg)
+    {
+        auto arg = argv[iarg];
+        if (arg[0] == '+' || arg[0] == '-' || arg[0] == '.' ||
+            ('0' <= arg[0] && arg[0] <= '9'))
+        {
+            auto value = std::strtod(arg, nullptr);
+            args.push_back(vsk_ast(value));
+        }
+        else
+        {
+            args.push_back(vsk_ast(arg));
+        }
+    }
+
+    VskString out;
+    vsk_print_using(out, argv[1], args);
+    printf("%s\n", out.c_str());
+
     return 0;
 }
 #endif

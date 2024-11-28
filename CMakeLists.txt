@@ -23,7 +23,7 @@ endif()
 
 # print_using.exe
 add_executable(print_using print_using.cpp)
-target_compile_definitions(print_using PRIVATE -DUNITTEST)
+target_compile_definitions(print_using PRIVATE PRINT_USING_EXE)
 if(MSVC)
     target_link_options(print_using PRIVATE /MANIFEST:NO)
 endif()

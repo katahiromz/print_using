@@ -4,7 +4,7 @@
 
 #pragma once
 
-#define PRINT_USING_VERSION 108
+#define PRINT_USING_VERSION 109
 
 #ifdef __cplusplus
 extern "C" {
