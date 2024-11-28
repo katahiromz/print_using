@@ -719,6 +719,15 @@ void vsprint_using(char *buffer, size_t buffer_size, const char *format, va_list
 }
 
 extern "C"
+void sprint_using(char *buffer, size_t buffer_size, const char *format, ...)
+{
+    va_list va;
+    va_start(va, format);
+    vsprint_using(buffer, buffer_size, format, va);
+    va_end(va);
+}
+
+extern "C"
 int vprint_using(const char *format, va_list va)
 {
     VskString out = vstr_print_using(format, va);
