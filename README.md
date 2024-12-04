@@ -6,6 +6,8 @@
 
 N88-BASIC風の`PRINT USING`文をエミュレートするC++11のプログラム兼ライブラリを製作しました。
 
+`PRINT USING`の動作を精巧に再現しています。
+
 ## 使い方
 
 1. `print_using.h` を `#include` する。
@@ -32,6 +34,8 @@ N88-BASIC風の`PRINT USING`文をエミュレートするC++11のプログラ�
 ## Overview
 
 I have created a program and library that emulates the N88-BASIC-like `PRINT USING` statement in C++11.
+
+It precisely reproduces the behavior of `PRINT USING`.
 
 ## Usage
 
